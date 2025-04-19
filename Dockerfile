@@ -1,4 +1,4 @@
-# image  PHP 8.2 avec Apache
+# Utiliser une image officielle PHP avec Apache
 FROM php:8.2-apache
 
 # Mettre à jour et installer les extensions nécessaires
@@ -9,21 +9,28 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd mysqli
 
-# Copier les fichiers locaux dans le répertoire du conteneur
+# Copier le fichier .env dans le conteneur
+COPY .env /var/www/html/.env
+
+# Copier les fichiers de l'application dans le répertoire /var/www/html
 COPY . /var/www/html/
 
-# Définir les permissions 
+# Définir les permissions pour que Apache puisse accéder aux fichiers
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 755 /var/www/html
 
-# éviter le message d'avertissement sur le ServerName
+# Installer Composer (si ce n'est pas déjà installé) et phpdotenv
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer require vlucas/phpdotenv
+
+# Ajouter une configuration pour éviter le message d'avertissement sur le ServerName
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# Activer le module mod_rewrite d'Apache 
+# Activer le module mod_rewrite d'Apache (utile pour des redirections)
 RUN a2enmod rewrite
 
-# Exposer le port 80
+# Exposer le port 80 pour accéder à l'API
 EXPOSE 80
 
-# (foreground) le conteneur reste en fonctionnement
+# Démarrer Apache en mode foreground pour que le conteneur reste en fonctionnement
 CMD ["apache2ctl", "-D", "FOREGROUND"]

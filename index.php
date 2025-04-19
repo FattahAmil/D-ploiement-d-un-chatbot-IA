@@ -1,8 +1,16 @@
 <?php
 
+// Charger les variables d'environnement avec phpdotenv
+require_once __DIR__ . '/vendor/autoload.php';
+Dotenv\Dotenv::createImmutable(__DIR__)->load();
+
+
+
 
 $urlApiMistral = getenv('urlApiMistral');
 $apiKeyMistral = getenv('apiKey');
+echo "test" .$urlApiMistral.' '. $apiKeyMistral;
+
 $userInput = $_POST['message'] ?? json_decode(file_get_contents('php://input'), true)['message'] ?? null;
 
 if (!$urlApiMistral) {
