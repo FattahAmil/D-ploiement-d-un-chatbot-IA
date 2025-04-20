@@ -9,8 +9,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd mysqli
 
-# Copier le fichier .env dans le conteneur
-COPY .env /var/www/html/.env
+
 
 # Copier les fichiers de l'application dans le répertoire /var/www/html
 COPY . /var/www/html/
@@ -19,9 +18,7 @@ COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 755 /var/www/html
 
-# Installer Composer (si ce n'est pas déjà installé) et phpdotenv
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer require vlucas/phpdotenv
+
 
 # Ajouter une configuration pour éviter le message d'avertissement sur le ServerName
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf

@@ -1,10 +1,5 @@
 <?php
 
-// Charger les variables d'environnement avec phpdotenv
-require_once __DIR__ . '/vendor/autoload.php';
-Dotenv\Dotenv::createImmutable(__DIR__)->load();
-
-
 
 
 $urlApiMistral = getenv('urlApiMistral');
@@ -28,7 +23,6 @@ if (!$userInput) {
     exit();
 }
 
-// Préparation des messages (simulateur de chatbot SNCF)
 $messages = [
     ["role" => "system", "content" => "Tu es Inoui, un assistant virtuel de la SNCF. Réponds toujours de manière claire et utile sur les horaires, tarifs, billets, services et infos pratiques de la SNCF. Sois poli et professionnel, avec une petite touche chaleureuse."],
     ["role" => "user", "content" => $userInput],

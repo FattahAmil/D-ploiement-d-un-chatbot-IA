@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatbot-deployment
+spec:
+  replicas: 2  # Nombre de réplicas souhaité
+  selector:
+    matchLabels:
+      app: chatbot
+  template:
+    metadata:
+      labels:
+        app: chatbot
+    spec:
+      containers:
+      - name: chatbot-container
+        image: fattahamil/chatbot-inoui:latest  # Image Docker pour votre application
+        ports:
+        - containerPort: 80  # Port sur lequel le conteneur écoute
+        env:
+        - name: urlApiMistral
+          valueFrom:
+            configMapKeyRef:
+              name: chatbot-config  # Nom du ConfigMap
+              key: urlApiMistral
+        - name: apiKey
+          valueFrom:
+            secretKeyRef:
+              name: api-mistral-secret  # Nom du Secret
+              key: apiKey
+        resources:
+          requests:
+            cpu: "100m"  # Quantité de CPU demandée
+            memory: "128Mi"  # Mémoire demandée
+          limits:
+            cpu: "500m"  # Limites maximales de CPU
+            memory: "256Mi"  # Limites maximales de mémoire
+      volumes:
+      - name: log-volume
+        emptyDir: {}  # Volume temporaire pour les logs (vide)
