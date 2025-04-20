@@ -1,13 +1,22 @@
 <?php
 
+// Définir le chemin du fichier de log
+$log_file = '/var/log/inoui/access.log';
 
+// Obtenir l'horodatage actuel
+$timestamp = date('Y-m-d H:i:s');
 
+// Obtenir l'adresse IP du client
+$client_ip = $_SERVER['REMOTE_ADDR'];
+
+// Variables d'environnement
 $urlApiMistral = getenv('urlApiMistral');
 $apiKeyMistral = getenv('apiKey');
-echo "test" .$urlApiMistral.' '. $apiKeyMistral;
+echo "test" . $urlApiMistral . ' ' . $apiKeyMistral;
 
 $userInput = $_POST['message'] ?? json_decode(file_get_contents('php://input'), true)['message'] ?? null;
 
+// Vérification des variables d'environnement
 if (!$urlApiMistral) {
     echo "Erreur : La variable d'environnement 'urlApiMistral' est manquante.";
     exit();
@@ -37,7 +46,6 @@ $data = [
 
 $ch = curl_init();
 
-
 curl_setopt($ch, CURLOPT_URL, $urlApiMistral . "/v1/chat/completions");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
@@ -59,6 +67,11 @@ http_response_code(curl_getinfo($ch, CURLINFO_HTTP_CODE));
 
 $responseData = json_decode($response, true);
 
+// Enregistrer les logs de la requête et de la réponse
+$log_entry = "[" . $timestamp . "] " . $client_ip . " - " . $userInput . " - " . json_encode($responseData) . "\n";
+file_put_contents($log_file, $log_entry, FILE_APPEND);
+
+// Retourner la réponse sous forme de JSON
 if (isset($responseData['choices'][0]['message']['content'])) {
     echo $responseData['choices'][0]['message']['content'];
 } else {

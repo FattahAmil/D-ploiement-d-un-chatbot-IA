@@ -1,6 +1,9 @@
 # Utiliser une image officielle PHP avec Apache
 FROM php:8.2-apache
 
+# Set up the necessary directories for logs
+RUN mkdir -p /var/log/inoui
+
 # Mettre à jour et installer les extensions nécessaires
 RUN apt-get update && apt-get install -y \
     libpng-dev \
