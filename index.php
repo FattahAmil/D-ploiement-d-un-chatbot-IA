@@ -12,7 +12,7 @@ $client_ip = $_SERVER['REMOTE_ADDR'];
 // Variables d'environnement
 $urlApiMistral = getenv('urlApiMistral');
 $apiKeyMistral = getenv('apiKey');
-echo "test" . $urlApiMistral . ' ' . $apiKeyMistral;
+
 
 $userInput = $_POST['message'] ?? json_decode(file_get_contents('php://input'), true)['message'] ?? null;
 
