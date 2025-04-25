@@ -13,8 +13,8 @@ spec:
         app: chatbot
     spec:
       containers:
-      - name: chatbot-container
-        image: fattahamil/chatbot-inoui:latest  # Image Docker pour votre application
+      - name: chatbot-api-container
+        image: fattahamil/chatbot-api:latest  # Image Docker pour votre application
         ports:
         - containerPort: 80  # Port sur lequel le conteneur écoute
         env:
